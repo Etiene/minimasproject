@@ -3,7 +3,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-import data_reader as d
+from data_reader import PrepareDataset
 
-dataset = d.PrepareDataset("./data/train.txt")
+dataset = PrepareDataset("./data/train.txt")
 print(dataset.frame)
