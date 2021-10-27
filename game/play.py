@@ -37,6 +37,7 @@ def get_params(params):
         default=default_sender_gumbel_softmax_temperature,
         help="GS temperature for the sender, only relevant in Gumbel-Softmax (gs) mode (default: {})".format(default_sender_gumbel_softmax_temperature),
     )
+
     parser.add_argument(
         "--sender_cell",
         type=str,
@@ -82,22 +83,19 @@ def get_params(params):
     args = core.init(parser, params)
     return args
 
-def loss(receiver_output, labels):
-    acc = (receiver_output.argmax(dim=1) == labels).detach().float()
-    loss = F.mse_loss(receiver_output, labels)
-    return loss, {"acc": acc}
+def loss(sender_input, _message, _receiver_input, receiver_output, labels, _aux_input):
+    loss = F.mse_loss(receiver_output, sender_input, reduction="none").mean(-1)
+    return loss, {}
 
 class LayerWrapper(nn.Module):
-    def __init__(self, layer):
+    def __init__(self, output):
         super(LayerWrapper, self).__init__()
-        self.layer = layer
-
-    def forward(self, x, _):
-        return self.layer(x)
+        self.output = output
 
 class Game():
     def __init__(self, params):
         self.opts = get_params(params)
+        print("batch size: {}".format(self.opts.batch_size))
 
     def create_loader(self, path):
         dataset = PrepareDataset(path=path)
@@ -105,14 +103,16 @@ class Game():
         return DataLoader(
             dataset,
             batch_size=self.opts.batch_size,
-            shuffle=True,
+            #shuffle=True,
+            shuffle=False,
             num_workers=1,
         )
 
     def create_sender(self):
-        sender_layer = LayerWrapper(nn.Linear(self.n_features, self.opts.sender_hidden))
+        layer = LayerWrapper(nn.Linear(self.n_features, self.opts.sender_hidden))
+        layer.forward = lambda x, _: layer.output(x)
         agent = core.RnnSenderGS(
-            sender_layer,
+            layer,
             vocab_size=self.opts.vocab_size,
             embed_dim=self.opts.sender_embedding,
             hidden_size=self.opts.sender_hidden,
@@ -123,9 +123,10 @@ class Game():
         return agent
 
     def create_receiver(self):
-        receiver_layer = LayerWrapper(nn.Linear(self.n_features, self.opts.receiver_hidden))
+        layer = LayerWrapper(nn.Linear(self.opts.sender_hidden, self.n_features))
+        layer.forward = lambda x, _, __: layer.output(x)
         agent = core.RnnReceiverGS(
-            receiver_layer,
+            layer,
             vocab_size=self.opts.vocab_size,
             embed_dim=self.opts.receiver_embedding,
             hidden_size=self.opts.receiver_hidden,
