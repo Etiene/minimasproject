@@ -24,7 +24,7 @@ class PrepareDataset(Dataset):
                 raise ValueError("Error reading data, unexpected length {} of numbers on line {}. Must be 3.".format(len(numbers), numbers))
             input = numbers[:2]
             label = numbers[2]
-            self.frame.append((torch.tensor(input), torch.tensor(label)))
+            self.frame.append((torch.FloatTensor(input), torch.FloatTensor([label])))
 
 
     def get_n_features(self):
