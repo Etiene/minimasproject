@@ -10,7 +10,7 @@ def create_numbers(n, max_limit):
     for i in range(n):
         a, b = -1, -1
         # avoiding duplicates
-        # could halt forever, go play the lottery if it does
+        # could halt forever
         while(all.get((a,b), None) != None):
             a = random.randint(0, max_limit)
             b = random.randint(0, max_limit)

@@ -97,14 +97,13 @@ class Game():
         self.opts = get_params(params)
         print("batch size: {}".format(self.opts.batch_size))
 
-    def create_loader(self, path):
+    def create_loader(self, path, shuffle):
         dataset = PrepareDataset(path=path)
         self.n_features = dataset.get_n_features()
         return DataLoader(
             dataset,
             batch_size=self.opts.batch_size,
-            #shuffle=True,
-            shuffle=False,
+            shuffle=shuffle,
             num_workers=1,
         )
 
@@ -153,8 +152,8 @@ class Game():
 
     def prepare_data(self):
         print("Preparing dataset...")
-        self.train_loader = self.create_loader(self.opts.train_data)
-        self.test_loader = self.create_loader(self.opts.validation_data)
+        self.train_loader = self.create_loader(self.opts.train_data, True)
+        self.test_loader = self.create_loader(self.opts.validation_data, False)
 
     def build_model(self):
         print("Building model...")
