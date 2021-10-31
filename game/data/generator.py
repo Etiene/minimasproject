@@ -13,7 +13,7 @@ def create_numbers(n, max_limit):
         # could halt forever
         while(all.get((a,b), None) != None):
             a = random.randint(0, max_limit)
-            b = random.randint(0, max_limit)
+            b = random.randint(0, max_limit - a)
         all[(a,b)]=True
         print(a, b, a+b)
 
