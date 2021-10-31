@@ -1,4 +1,4 @@
-# Mini Multi-agent system project
+# Mini multi-agent system project
 
 Created for a PhD application process
 

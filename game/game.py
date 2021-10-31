@@ -1,6 +1,6 @@
 # Game for PhD application
 #
-# Two neural networks, a sender and a receiver, working together to get the
+# Two neural networks, a sender and a receiver, work together to get the
 # sum of two numbers. The sender gets two numbers and sends a discrete message
 # to the receiver, who must complete the task and tell us the sum. These networks
 # are created using PyTorch and then are wrapped by the EGG framework which handles
