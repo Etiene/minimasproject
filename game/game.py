@@ -71,9 +71,9 @@ class Game():
 
     def create_receiver(self):
         # Creating the agent using the wrapper and the EGG architecture
-        # Using a deterministic agent (output is always the same for a certain)
-        # message. Output is size 1, a tensor with just the number we want it to guess
-        # We are using a continuous loss.
+        # Using a deterministic agent (output is always the same for a certain
+        # message). Output is size 1, a tensor with just the number we want it
+        # to guess as we are using a continuous loss function.
         layer = LayerWrapper(nn.Linear(self.opts.receiver_hidden, 1))
         agent = core.RnnReceiverDeterministic(
             layer,
@@ -115,6 +115,7 @@ class Game():
         # 6, that is considered good enough as the nearest integer is the label.
         # https://pytorch.org/docs/stable/generated/torch.isclose.html#torch.isclose
         acc = receiver_output.isclose(labels, atol = 0.5).detach().float()
+        # Mean Squared Error loss, for continuous output
         loss = F.mse_loss(receiver_output, labels, reduction="none").mean()
         return loss, {"acc": acc}
 
