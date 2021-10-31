@@ -9,8 +9,8 @@
 import torch
 from torch.utils.data import Dataset
 
-# This class opents a text file containing three whole numbers per line and
-# converts it to the the necessary format for the simulation with EGG.
+# This class opens a text file containing three whole numbers per line and
+# converts them to the the necessary format for the simulation with EGG.
 # The two first numbers are the ones that need to be summed, and the last
 # number is the label sum.
 class PrepareDataset(Dataset):
@@ -28,7 +28,6 @@ class PrepareDataset(Dataset):
 
 
     def get_n_features(self):
-        # TODO: review this function
         return self.frame[0][0].size(0)
 
     def __len__(self):
