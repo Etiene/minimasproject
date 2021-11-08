@@ -5,20 +5,44 @@
 import random
 import sys
 
-def create_numbers(n, max_limit):
-    all = {(-1,-1): True}
-    for i in range(n):
-        a, b = -1, -1
+
+def create_numbers(max_limit, n_samples=None, format_for_training=True, echo=False, start_from=0):
+    random.seed(a=None, version=2)
+    all = {(-1, -1): True}
+    lines = []
+    inputs = []
+    outputs = []
+    # checking max number of samples that can be created
+    n_integers = max_limit + 1
+    max_samples = n_integers * n_integers - sum(range(n_integers))
+    if n_samples is None or n_samples > max_samples:
+        n_samples = max_samples
+        print("Max samples: {}".format(max_samples))
+
+    for i in range(n_samples):
+        output, input_1 = -1, -1
         # avoiding duplicates
         # could halt forever
-        while(all.get((a,b), None) != None):
-            a = random.randint(0, max_limit)
-            b = random.randint(0, max_limit - a)
-        all[(a,b)]=True
-        print(a, b, a+b)
+        while(all.get((output, input_1), None) != None):
+            output = random.randint(start_from, max_limit)
+            input_1 = random.randint(0, output)
+        all[(output, input_1)] = True
+        input_2 = output - input_1
+        if format_for_training:
+            lines.append("{} {} {}".format(input_1, input_2, output))
+        else:
+            inputs.append([input_1, input_2])
+            outputs.append([output])
+        if echo:
+            print(input_1, input_2, output)
+
+    if format_for_training:
+        return lines
+
+    return inputs, outputs
+
 
 if __name__ == "__main__":
-    random.seed(a=None, version=2)
     n_samples = int(sys.argv[1])
     max_limit = int(sys.argv[2]) or 1000
-    create_numbers(n_samples, max_limit)
+    create_numbers(max_limit, n_samples, True, True)
