@@ -67,6 +67,20 @@ class Game():
             num_workers=1,
         )
 
+    def save_checkpoint(self, epoch, name):
+        game = self.trainer.game
+        scheduler_state_dict = None
+        if self.opts.use_scheduler:
+            self.trainer.optimizer_scheduler.state_dict()
+
+        checkpoint = cb.Checkpoint(
+            epoch=epoch,
+            model_state_dict=game.state_dict(),
+            optimizer_state_dict=self.trainer.optimizer.state_dict(),
+            optimizer_scheduler_state_dict=scheduler_state_dict,
+        )
+        save(checkpoint, "{}_{}.tar".format(name, epoch))
+
     def create_sender(self):
         # Creating the agent using the layer wrapper and the EGG architecture
         # Using Reinforcing agent.
