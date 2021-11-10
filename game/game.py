@@ -79,7 +79,9 @@ class Game():
             optimizer_state_dict=self.trainer.optimizer.state_dict(),
             optimizer_scheduler_state_dict=scheduler_state_dict,
         )
-        save(checkpoint, "{}_{}.tar".format(name, epoch))
+        save_name = "{}_{}.tar".format(name, epoch)
+        save(checkpoint, save_name)
+        print("Checkpoint saved at {}".format(save_name))
 
     def create_sender(self):
         # Creating the agent using the layer wrapper and the EGG architecture
@@ -117,6 +119,7 @@ class Game():
 
         # Test with a scheduler
         if(self.opts.use_scheduler is True):
+            print("Using scheduler")
             self.scheduler = optim.lr_scheduler.CosineAnnealingLR(
                 optimizer, T_max=self.opts.n_epochs
             )
