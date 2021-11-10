@@ -17,7 +17,7 @@ def create_numbers(max_limit, n_samples=None, format_for_training=True, echo=Fal
     max_samples = n_integers * n_integers - sum(range(n_integers))
     if n_samples is None or n_samples > max_samples:
         n_samples = max_samples
-        print("Max samples: {}".format(max_samples))
+    print("Generating {} samples...".format(n_samples))
 
     for i in range(n_samples):
         output, input_1 = -1, -1
