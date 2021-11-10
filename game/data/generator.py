@@ -37,6 +37,7 @@ def create_numbers(max_limit, n_samples=None, format_for_training=True, echo=Fal
             print(input_1, input_2, output)
 
     if format_for_training:
+        random.shuffle(lines)
         return lines
 
     return inputs, outputs
