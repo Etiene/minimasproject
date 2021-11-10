@@ -110,7 +110,7 @@ class Game():
         return core.Trainer(
             game=game,
             optimizer=optimizer,
-            optimizer_scheduler=self.opts.use_scheduler if self.opts.use_scheduler else None,
+            optimizer_scheduler=self.scheduler if self.opts.use_scheduler else None,
             train_data=self.train_loader,
             validation_data=self.test_loader,
             callbacks=[
