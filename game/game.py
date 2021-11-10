@@ -47,8 +47,9 @@ class LayerWrapper(nn.Module):
         # though, but this is set in the create functions of the Game class below.
         return self.output(x)
 
-# Main game
+
 class Game():
+    # Main game
     def __init__(self, args):
         # EGG depends on argparse
         parser, params = get_parser_params(args)
@@ -68,14 +69,15 @@ class Game():
     def create_sender(self):
         # Creating the agent using the layer wrapper and the EGG architecture
         # Using Reinforcing agent.
-        layer = LayerWrapper(nn.Linear(self.n_features, self.opts.sender_hidden))
+        arch = nn.Linear(self.n_features, self.opts.sender_hidden)
+        layer = LayerWrapper(arch)
         agent = core.RnnSenderReinforce(
             layer,
             vocab_size=self.opts.vocab_size,
             embed_dim=self.opts.sender_embedding,
             hidden_size=self.opts.sender_hidden,
             cell=self.opts.sender_cell,
-            max_len=self.opts.max_len, # 1 is default
+            max_len=self.opts.max_len,  # 1 is default
         )
         return agent
 
@@ -84,7 +86,8 @@ class Game():
         # Using a deterministic agent (output is always the same for a certain
         # message). Output is size 1, a tensor with just the number we want it
         # to guess as we are using a continuous loss function.
-        layer = LayerWrapper(nn.Linear(self.opts.receiver_hidden, 1))
+        arch = nn.Linear(self.opts.receiver_hidden, 1)
+        layer = LayerWrapper(arch)
         agent = core.RnnReceiverDeterministic(
             layer,
             vocab_size=self.opts.vocab_size,
