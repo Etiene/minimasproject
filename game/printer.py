@@ -27,5 +27,5 @@ class CustomPrintValidationEvents(PrintValidationEvents):
                 logs.labels[i].tolist()))
 
         # Prints unique symbols found in messages
-        unique_symbols = { m[0].item() for m in logs.message }
+        unique_symbols = { symbol.item() for message in logs.message for symbol in message}
         print("Number of unique symbols: {} ({})".format(len(unique_symbols), unique_symbols))
