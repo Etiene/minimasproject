@@ -1,6 +1,8 @@
 # Mini multi-agent system project
 
-Created for a PhD application process
+Created for a PhD application process.
+
+* [Project Management Dashboard in Notion][notion_workspace]
 
 Two neural networks, a sender and a receiver, work together to get the
 sum of two numbers. The sender gets two numbers as input and sends a discrete
@@ -16,3 +18,4 @@ LICENSE file in the root directory of this source tree.
 [egg]:https://github.com/facebookresearch/EGG
 [example]:https://github.com/facebookresearch/EGG/tree/3834759306d7155b9f3182e4b0606f61035c7fed/egg/zoo/basic_games
 [pytorch]:https://pytorch.org/
+[notion_workspace]:https://teal-ticket-eb2.notion.site/PhD-application-mini-project-d291e8842054419da219bd8ca98f5532
