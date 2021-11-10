@@ -152,27 +152,32 @@ class Game():
 
         sender = self.create_sender()
         receiver = self.create_receiver()
-        game = core.SenderReceiverRnnReinforce(
+        self.game = core.SenderReceiverRnnReinforce(
             sender,
             receiver,
             self._loss,
-            sender_entropy_coeff=0.8, # TODO: add to tool command line args on params.py
+            sender_entropy_coeff=self.opts.sender_entropy,
         )
-        optimizer = core.build_optimizer(game.parameters())
-        self.trainer = self.create_trainer(game, sender, optimizer)
+        self.trainer = self.create_trainer(self.game, sender)
 
-        print(game)
-        print("Number of parameters {}".format(nn.utils.parameters_to_vector(game.parameters()).numel()))
+        print(self.game)
+        print("Number of parameters {}".format(
+            nn.utils.parameters_to_vector(self.game.parameters()).numel()))
 
     def train(self):
         print("\n----------")
-        print("Training...")
+        a = datetime.datetime.now()
+        print("Start of training... {}".format(a))
         self.trainer.train(n_epochs=self.opts.n_epochs)
+        b = datetime.datetime.now()
+        print("End of training... {}".format(b))
+        print("Duration: {} seconds".format(round((b-a).total_seconds(), 2)))
 
     def play(self):
         self.prepare_data()
         self.build_model()
         self.train()
+
 
 if __name__ == "__main__":
     import sys
