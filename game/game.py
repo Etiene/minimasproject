@@ -97,10 +97,19 @@ class Game():
         )
         return agent
 
-    def create_trainer(self, game, sender, optimizer):
+    def create_trainer(self, game, sender):
+        optimizer = core.build_optimizer(self.game.parameters())
+
+        # Test with a scheduler
+        if(self.opts.use_scheduler is True):
+            self.scheduler = optim.lr_scheduler.CosineAnnealingLR(
+                optimizer, T_max=self.opts.n_epochs
+            )
+
         return core.Trainer(
             game=game,
             optimizer=optimizer,
+            optimizer_scheduler=self.opts.use_scheduler if self.opts.use_scheduler else None,
             train_data=self.train_loader,
             validation_data=self.test_loader,
             callbacks=[
@@ -113,9 +122,12 @@ class Game():
     def prepare_data(self):
         print("Preparing dataset...")
         self.train_loader = self.create_data_loader(self.opts.train_data, True)
-        print("Samples in training set: {}".format(len(self.train_loader.dataset.frame)))
-        self.test_loader = self.create_data_loader(self.opts.validation_data, False)
-        print("Samples in test set: {}".format(len(self.test_loader.dataset.frame)))
+        print("Samples in training set: {}".format(
+            len(self.train_loader.dataset.frame)))
+        self.test_loader = self.create_data_loader(
+            self.opts.validation_data, False)
+        print("Samples in test set: {}".format(
+            len(self.test_loader.dataset.frame)))
 
     # This loss function is sent to the EGG game constructor and must have this
     # exact number of parameters. That means it cant receive 'self', hence its
@@ -124,12 +136,14 @@ class Game():
     def _loss(sender_input, _message, _receiver_input, receiver_output, labels, _aux_input):
         # Using torch.isclose as a rough measure of accuracy since rounding
         # output in a continuous loss function will prevent model from training.
-        # Absolute tolerance is set to 0.5 so that if output is 6.5, and label is
+        # Absolute tolerance is set to 0.5 so that if output is 6.01, and label is
         # 6, that is considered good enough as the nearest integer is the label.
         # https://pytorch.org/docs/stable/generated/torch.isclose.html#torch.isclose
-        acc = receiver_output.isclose(labels, atol = 0.5).detach().float()
+        acc = receiver_output.isclose(labels, atol=0.5).detach().float()
         # Mean Squared Error loss, for continuous output
-        loss = F.mse_loss(receiver_output, labels, reduction="none").mean()
+        loss = F.mse_loss(receiver_output, labels, reduction="none")
+        # Averaging for batches biggers than 1
+        loss = loss.mean()
         return loss, {"acc": acc}
 
     def build_model(self):
