@@ -14,17 +14,27 @@
 
 # external code
 import egg.core as core
+from egg.core import PrintValidationEvents
 import torch.nn.functional as F
 import torch.nn as nn
 from torch.utils.data import DataLoader
+import torch.optim as optim
+from __future__ import absolute_import
+import datetime
+
 # local code
-from data_reader import PrepareDataset
-from printer import CustomPrintValidationEvents
-from params import get_parser_params
+try:
+    from data_reader import PrepareDataset
+    from printer import CustomPrintValidationEvents
+    from params import get_parser_params
+except ImportError:
+    from .data_reader import PrepareDataset
+    from .printer import CustomPrintValidationEvents
+    from .params import get_parser_params
 
 
-# Wrapper class necessary for creating the agents in EGG
 class LayerWrapper(nn.Module):
+    # Wrapper class necessary for creating the agents in EGG
     def __init__(self, output):
         super(LayerWrapper, self).__init__()
         self.output = output
