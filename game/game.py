@@ -13,14 +13,15 @@
 # LICENSE file in the root directory of this source tree.
 
 # external code
-import egg.core as core
-from egg.core import PrintValidationEvents
-import torch.nn.functional as F
-import torch.nn as nn
-from torch.utils.data import DataLoader
-import torch.optim as optim
 from __future__ import absolute_import
 import datetime
+import egg.core as core
+import egg.core.callbacks as cb
+import torch.nn.functional as F
+import torch.nn as nn
+from torch import save
+from torch.utils.data import DataLoader
+import torch.optim as optim
 
 # local code
 try:
