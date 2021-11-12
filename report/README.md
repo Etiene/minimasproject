@@ -200,7 +200,7 @@ For many models the number of unique messages emitted in one pass of the dataset
 
 One interesting finding is that the number of unique messages encountered for a given label is also not equally distributed. It is skewed towards the higher sums in the dataset as seen in the chart below. A potential reason for that could be the natural imbalance of the frequency of sums found in the dataset and the number of messages emitted: there is only one sample that sums to 0, and several samples that sum to 10.On the other hand, if the messages correspond to the input, this could also be explained by the variety of inputs for each sum, 0 has only one unique input (0+0) and 10 has many (10+0, 0+10, 9+1, 1+9, 2+8...).
 
-![Screenshot 2021-11-12 at 05.32.53.png]((Screenshot_2021-11-12_at_05.32.53.png)
+![Screenshot 2021-11-12 at 05.32.53.png](Screenshot_2021-11-12_at_05.32.53.png)
 
 ### Input or sum
 
@@ -235,7 +235,7 @@ Although the hope was that a regression model could generalize better than a cla
 
 Nevertheless, it would also be interesting to investigate how the current approach could be improved. In this scenario, I would focus on actually helping the model learn for whole numbers instead of the current workaround for the accuracy calculation. This could mean adding some non-linearity to the inner model's architecture, investigating if there are other EGG receiver wrappers that would work with a non-differentiable output so the rounding function could be used, or, if that's not possible, trying a different function that works at least as an approximation while being still differentiable, such as the one below:
 
-![x - (sin(2pi x)/2pi)](minimasproject/report/Screenshot 2021-11-12 at 08.33.40.png)
+![x - (sin(2pi x)/2pi)](Screenshot_2021-11-12_at_08.33.40.png)
 
 ![Plot of x - (sin(2pi x)/2pi)](Screenshot_2021-11-09_at_19.38.03.png)
 Plot of x - (sin(2pi x)/2pi)
