@@ -8,7 +8,7 @@ This project was created by Etiene Dalcol as part of the application process for
 
 ## Introduction
 
-The aim of this project is to create a multi-agent model to investigate the emergence of language using the [EGG toolkit](https://github.com/facebookresearch/EGG). The model must have two agents, a sender and a receiver, where each of them is a neural network, which are trained to communicate in order to complete a task. The task which they have to solve is adding two whole numbers ranging from 0 to N. The sender receives the pair of numbers as an input and sends a discrete message to the receiver, which then must give us the sum.
+The aim of this project is to create a multi-agent model to investigate the emergence of language using the [EGG toolkit](https://github.com/facebookresearch/EGG). The model must have two agents, a sender and a receiver, where each of them is a neural network, which are trained to communicate in order to complete a task. The task which they have to solve is adding two whole numbers ranging from 0 to N. The sender receives the pair of numbers as an input and sends a discrete message to the receiver, which then must give us the sum, like in the diagram below.
 
 Input ([11,45]) —> Agent 1 ("Sender") - - - ***message*** - - - > Agent 2 ("Receiver") —> Output (56)
 
