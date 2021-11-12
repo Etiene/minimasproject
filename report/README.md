@@ -44,7 +44,7 @@ To have a regression model, it was necessary to adapt the example to work with a
 
 A dataset was created by generating random samples that summed up to 1000. However, due to the computing resources and time required to train a model, this dataset was discarded and other, smaller, datasets were generated. This was done as an attempt to first try to obtain a model that could converge, so the messages could be analysed, before trying to explore training with bigger datasets. In the end, three different datasets were kept, shown in the table below. The total amount of samples was either a defined limit or capped by the maximum possible combination of numbers that could be summed to reach the maximum integer. The training and validation sets were defined by splitting each dataset randomly in a 8:2 ratio.
 
-| Name    | Min Integer | Max Integer | Train samples | Validation samples |
+| Dataset | Min Integer | Max Integer | Train samples | Validation samples |
 |---------|-------------|-------------|---------------|--------------------|
 | data100 | 0           | 100         | 800           | 200                |
 | data30  | 0           | 30          | 396           | 100                |
@@ -104,7 +104,7 @@ Given the project's specification of starting by considering only single-symbol 
 
 Nevertheless, despite the issues observed, some models obtained good results with above-chance accuracies for the training set and the validation set. Although the validation set contained samples not used in training, it still contained samples in the same range of integers as the training set. Given that, for these models, one other test was conducted to observe the capacity of these models to generalize for sums above the maximum in its training in four different ranges as seen on the table below. For example, would a model trained on integers that add up to 10 be able to correctly predict 21 + 17 = 38?
 
-| Name     | Number of samples | Start number | End number |
+|  Dataset | Number of samples | Start number | End number |
 |----------|-------------------|--------------|------------|
 | data10_A | 20                | 11           | 12         |
 | data10_B | 100               | 13           | 20         |
@@ -152,7 +152,7 @@ None of the models trained on *data30* or *data100* learned to high accuracy, bu
 
 Both increasing the vocabulary size or the length of the message had a positive effect on training, as expected. This can be observed on the tables below. However, the effect of some of the other model parameters remains unclear.
 
-| Name        | Vocabulary Size | Message Length | Hidden Layers size | Embedding dimensions |
+| Model       | Vocabulary Size | Message Length | Hidden Layers size | Embedding dimensions |
 |-------------|-----------------|----------------|--------------------|----------------------|
 | data10_16   | 16              | 1              | 16                 | 5                    |
 | data10_32   | 32              | 1              | 32                 | 7                    |
@@ -160,7 +160,9 @@ Both increasing the vocabulary size or the length of the message had a positive 
 | data10_128  | 128             | 1              | 128                | 8                    |
 | data10_16_2 | 16              | 2              | 16                 | 5                    |
 
-| Name        | Epochs trained | Validation set only * | Whole set * | Higher samples |
+### Model accuracies
+
+| Model       | Epochs trained | Validation set only * | Whole set * | Higher samples |
 |-------------|----------------|-----------------------|-------------|----------------|
 | data10_16   | 6000           | 0.5678                | 0.6719      | 0              |
 | data10_32   | 1500           | 0.6928                | 0.6871      | 0              |
@@ -168,39 +170,50 @@ Both increasing the vocabulary size or the length of the message had a positive 
 | data10_128  | 6000           | 0.8928                | 0.8257      | 0              |
 | data10_16_2 | 6000           | 0.9892                | 0.9734      | 0              |
 
-*average after 20 tests on set
+*average out of 20 tests on dataset
 
 The best performing models trained to sum integers up to 10 were the ones with the vocabulary size 64, and the one with 16 symbols in its vocabulary but working with messages containing 2 symbols. Although some models achieved great accuracy on the unseen samples of the validation set, none of them were able to generalize for samples working with integers above the range used in training. Various different messages are emitted for the higher samples, but all the output values are around the same values found for messages for the label 10.
 
-| Name        | Unique messages seen in whole set * | Polysemous messages * | % emitted polysemous messages |
-|-------------|-------------------------------------|-----------------------|-------------------------------|
-| data10_16   | 15.4                                | 8.35                  | 65.6                          |
-| data10_32   | 24.55                               | 9.05                  | 57.27                         |
-| data10_64   | 38.25                               | 2.45                  | 11.66                         |
-| data10_128  | 25.85                               | 8.05                  | 47.5                          |
-| data10_16_2 | 54.75                               | 0.45                  | 1.43                          |
+### Polysemy
 
-*average out of 20 tests
+| Model       | Unique messages seen * | Polysemous messages * | % emitted polysemous messages |
+|-------------|------------------------|-----------------------|-------------------------------|
+| data10_16   | 15.4                   | 8.35                  | 65.6                          |
+| data10_32   | 24.55                  | 9.05                  | 57.27                         |
+| data10_64   | 38.25                  | 2.45                  | 11.66                         |
+| data10_128  | 25.85                  | 8.05                  | 47.5                          |
+| data10_16_2 | 54.75                  | 0.45                  | 1.43                          |
+
+*average out of 20 tests on whole dataset
 
 Although some models performed worse in accuracy, they did not perform equally for all labels. That is because some of their messages were polysemous. As expected, the better the model, the less polysemous messages there were.  One interesting observation is that the polysemous messages were emitted at higher proportions. For example, in model data10_64, even though they represent about 6.3% of the unique messages encountered, they corresponded to about 11.6% of total messages emitted. This kind of pattern was observed across all models, and what is interesting about it is that this meaning-frequency law is also [observed in natural language](https://www.sciencedirect.com/science/article/pii/S0885230817300414?casa_token=0pdDxbZC8SwAAAAA:qvvuuGWXeCaCgNtTokNsmvlZjB1F2ChaDPY2h_VA3oLk4Vxeh4i8DfrBQl7NAJEESB1LxS3TUQ).
 
 Another characteristic that is similar to natural language is the general frequency of messages. They are not equally distributed, but instead follow a decaying curve as seen in the chart below.
 
-![Screenshot 2021-11-12 at 05.21.35.png](Screenshot_2021-11-12_at_05.21.35.png)
+<p align="center" width="100%"> 
+  <img width="70%" src="Screenshot_2021-11-12_at_05.21.35.png">
+</p>
+<p></p>
 
-| Name        | Average number of unique messages seen per pass of whole set * | Total messages seen in 100 passes | Number of messages with synonyms |
-|-------------|----------------------------------------------------------------|-----------------------------------|----------------------------------|
-| data10_16   | 15.4                                                           | 16                                | 16                               |
-| data10_32   | 24.55                                                          | 32                                | 32                               |
-| data10_64   | 38.25                                                          | 64                                | 64                               |
-| data10_128  | 25.85                                                          | 39                                | 38                               |
-| data10_16_2 | 54.75                                                          | 238                               | 237                              |
+### Synonymy
+
+| Model       | Average of unique messages seen in 20 tests through set | Total messages seen in 100 tests through set | Number of messages with synonyms |
+|-------------|---------------------------------------------------------|----------------------------------------------|----------------------------------|
+| data10_16   | 15.4                                                    | 16                                           | 16                               |
+| data10_32   | 24.55                                                   | 32                                           | 32                               |
+| data10_64   | 38.25                                                   | 64                                           | 64                               |
+| data10_128  | 25.85                                                   | 39                                           | 38                               |
+| data10_16_2 | 54.75                                                   | 238                                          | 237                              |
 
 For many models the number of unique messages emitted in one pass of the dataset is much lower than the maximum possible messages. Since the outputs found are within the range of maximum sum in the dataset, an explanation for that is that many messages actually have an alternative synonym that was not used. This was confirmed by running 100 passes of the whole dataset and counting all the messages seen, which were in general higher than the number of messages seen in one pass. The number of messages with synonyms, that is, messages that have another message for the same label, was unexpectedly found to be close to or equal to the number of total messages seen. Upon further reflection, this seems to have been caused by the way it was calculated, as it is matching a message to all messages that obtained the same labels it did, even in the cases where the label was not predicted correctly.
 
 One interesting finding is that the number of unique messages encountered for a given label is also not equally distributed. It is skewed towards the higher sums in the dataset as seen in the chart below. A potential reason for that could be the natural imbalance of the frequency of sums found in the dataset and the number of messages emitted: there is only one sample that sums to 0, and several samples that sum to 10.On the other hand, if the messages correspond to the input, this could also be explained by the variety of inputs for each sum, 0 has only one unique input (0+0) and 10 has many (10+0, 0+10, 9+1, 1+9, 2+8...).
 
-![Screenshot 2021-11-12 at 05.32.53.png](Screenshot_2021-11-12_at_05.32.53.png)
+<p align="center" width="100%"> 
+  <img width="70%" src="Screenshot_2021-11-12_at_05.32.53.png">
+</p>
+<p></p>
+
 
 ### Input or sum
 
@@ -235,9 +248,12 @@ Although the hope was that a regression model could generalize better than a cla
 
 Nevertheless, it would also be interesting to investigate how the current approach could be improved. In this scenario, I would focus on actually helping the model learn for whole numbers instead of the current workaround for the accuracy calculation. This could mean adding some non-linearity to the inner model's architecture, investigating if there are other EGG receiver wrappers that would work with a non-differentiable output so the rounding function could be used, or, if that's not possible, trying a different function that works at least as an approximation while being still differentiable, such as the one below:
 
-![x - (sin(2pi x)/2pi)](Screenshot_2021-11-12_at_08.33.40.png)
 
-![Plot of x - (sin(2pi x)/2pi)](Screenshot_2021-11-09_at_19.38.03.png)
-Plot of x - (sin(2pi x)/2pi)
+<p align="center" width="100%">
+  <img  width="25%" src="Screenshot_2021-11-12_at_08.33.40.png#center" alt="x - (sin(2pi x)/2pi)"/> 
+  <img width="30%" src="Screenshot_2021-11-09_at_19.38.03.png#center" alt="Plot of x - (sin(2pi x)/2pi)"/>
+  <p align="right">Plot of x - (sin(2pi x)/2pi)</p>
+</p>
+<p></p>
 
 Moreover, the effects of some of the model parameters were not thoroughly tested. During different runs, increasing the size of the embedding seemed to help, but increasing it too much seems to have made it worse. The same happened for the entropy coefficient. One possible explanation is that an entropy setting too low would not be encouraging the model to explore different paths when it gets stuck on a local optimum, and a setting too high could be making the model explore too much, forgetting its reinforcement.  More investigation could be done on the training effects of these hyperparameters.
