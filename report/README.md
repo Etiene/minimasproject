@@ -235,10 +235,9 @@ Although the hope was that a regression model could generalize better than a cla
 
 Nevertheless, it would also be interesting to investigate how the current approach could be improved. In this scenario, I would focus on actually helping the model learn for whole numbers instead of the current workaround for the accuracy calculation. This could mean adding some non-linearity to the inner model's architecture, investigating if there are other EGG receiver wrappers that would work with a non-differentiable output so the rounding function could be used, or, if that's not possible, trying a different function that works at least as an approximation while being still differentiable, such as the one below:
 
-$$x - \frac{sin(2\pi x)}{2\pi}$$
+![x - (sin(2pi x)/2pi)](minimasproject/report/Screenshot 2021-11-12 at 08.33.40.png)
 
 ![Plot of x - (sin(2pi x)/2pi)](Screenshot_2021-11-09_at_19.38.03.png)
-
 Plot of x - (sin(2pi x)/2pi)
 
 Moreover, the effects of some of the model parameters were not thoroughly tested. During different runs, increasing the size of the embedding seemed to help, but increasing it too much seems to have made it worse. The same happened for the entropy coefficient. One possible explanation is that an entropy setting too low would not be encouraging the model to explore different paths when it gets stuck on a local optimum, and a setting too high could be making the model explore too much, forgetting its reinforcement.  More investigation could be done on the training effects of these hyperparameters.
